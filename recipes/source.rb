@@ -40,9 +40,9 @@ end
 node.set['nginx']['binary']          = "#{node['nginx']['source']['prefix']}/sbin/nginx"
 node.set['nginx']['daemon_disable']  = true
 
-include_recipe "nginx::ohai_plugin"
-include_recipe "nginx::commons_dir"
-include_recipe "nginx::commons_script"
+include_recipe "tengine::ohai_plugin"
+include_recipe "tengine::commons_dir"
+include_recipe "tengine::commons_script"
 include_recipe "build-essential"
 
 src_filepath  = "#{Chef::Config['file_cache_path'] || '/tmp'}/nginx-#{node['nginx']['version']}.tar.gz"
@@ -140,7 +140,7 @@ else
   end
 end
 
-include_recipe "nginx::commons_conf"
+include_recipe "tengine::commons_conf"
 
 cookbook_file "#{node['nginx']['dir']}/mime.types" do
   source "mime.types"
@@ -151,7 +151,7 @@ cookbook_file "#{node['nginx']['dir']}/mime.types" do
 end
 
 node['nginx']['source']['modules'].each do |ngx_module|
-  include_recipe "nginx::#{ngx_module}"
+  include_recipe "tengine::#{ngx_module}"
 end
 
 configure_flags = node.run_state['nginx_configure_flags']

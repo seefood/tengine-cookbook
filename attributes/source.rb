@@ -29,8 +29,8 @@ default['nginx']['source']['default_configure_flags'] = [
 ]
 
 default['nginx']['configure_flags']  = Array.new
-default['nginx']['source']['url']     = "http://nginx.org/download/nginx-#{node['nginx']['version']}.tar.gz"
-default['nginx']['source']['checksum'] = "06a1153b32b43f100ee9147fe230917deea648f0155111c749e35da120646bf5"
+default['nginx']['source']['url']     = "http://tengine.taobao.org/download/tengine-#{node['nginx']['version']}.tar.gz"
+default['nginx']['source']['checksum'] = "dfef51d462285975444eb538d4e108a712f7a8022a051363d4ffee7aaab0dad4"
 default['nginx']['source']['modules'] = [
   "http_ssl_module",
   "http_gzip_static_module"

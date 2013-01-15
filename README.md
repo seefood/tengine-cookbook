@@ -1,7 +1,7 @@
 Description
 ===========
 
-Installs nginx from package OR source code and sets up configuration
+Installs Tengine from package (if one existed) OR source code and sets up configuration
 handling similar to Debian's Apache2 scripts.
 
 Requirements
@@ -14,6 +14,7 @@ The following cookbooks are direct dependencies because they're used
 for common "default" functionality.
 
 * build-essential (for nginx::source)
+* runit (for nginx::source)
 * ohai (for nginx::ohai_plugin)
 
 The following cookbook is not a strict dependency because its use can
@@ -358,8 +359,10 @@ License and Author
 - Author:: Adam Jacob (<adam@opscode.com>)
 - Author:: AJ Christensen (<aj@opscode.com>)
 - Author:: Jamie Winsor (<jamie@vialstudios.com>)
+- Author:: Ira Abramov (<github@ira.abramov.org>)
 
 - Copyright:: 2008-2012, Opscode, Inc
+- Copyright:: 2012-2013, Ira Abramov
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

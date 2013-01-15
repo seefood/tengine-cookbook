@@ -1,12 +1,12 @@
-name              "nginx"
-maintainer        "Opscode, Inc."
-maintainer_email  "cookbooks@opscode.com"
+name              "tengine"
+maintainer        "Ira Abramov"
+maintainer_email  "github@ira.abramov.org"
 license           "Apache 2.0"
-description       "Installs and configures nginx"
-version           "1.1.5"
+description       "Installs and configures Tengine, a heavily patched nginx"
+version           "1.4.0"
 
-recipe "nginx", "Installs nginx package and sets up configuration with Debian apache style with sites-enabled/sites-available"
-recipe "nginx::source", "Installs nginx from source and sets up configuration with Debian apache style with sites-enabled/sites-available"
+recipe "tengine", "Installs nginx package and sets up configuration with Debian apache style with sites-enabled/sites-available"
+recipe "tengine::source", "Installs tengine from source and sets up configuration with Debian apache style with sites-enabled/sites-available"
 
 %w{ ubuntu debian centos redhat amazon scientific oracle fedora }.each do |os|
   supports os
