@@ -19,13 +19,13 @@
 # limitations under the License.
 #
 
-srcache_nginx_module_version="0.16"
+srcache_nginx_module_version="0.17"
 srcache_nginx_module_filename = "v#{srcache_nginx_module_version}.tar.gz"
 srcache_nginx_module_filepath = "#{Chef::Config['file_cache_path']}/#{srcache_nginx_module_filename}"
 srcache_nginx_module_extract_path = "#{Chef::Config['file_cache_path']}/srcache-nginx-module-#{srcache_nginx_module_version}/"
 
 remote_file srcache_nginx_module_filepath do
-	source "https://github.com/agentzh/srcache-nginx-module/archive/v#{srcache_nginx_module_version}.tar.gz"
+  source "https://github.com/agentzh/srcache-nginx-module/archive/v#{srcache_nginx_module_version}.tar.gz"
   owner    'root'
   group    'root'
   mode     00644

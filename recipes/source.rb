@@ -161,7 +161,7 @@ bash "compile_nginx_source" do
   cwd ::File.dirname(src_filepath)
   code <<-EOH
     tar zxf #{::File.basename(src_filepath)} -C #{::File.dirname(src_filepath)} &&
-    cd nginx-#{node['nginx']['version']} &&
+    cd tengine-#{node['nginx']['version']} &&
     ./configure #{node.run_state['nginx_configure_flags'].join(" ")} &&
     make && make install
   EOH
