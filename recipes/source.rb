@@ -51,6 +51,8 @@ packages = value_for_platform(
     "default" => ['libpcre3', 'libpcre3-dev', 'libssl-dev']
   )
 
+Chef::Log.info "This is the tar to download #{src_filepath}"
+
 packages.each do |devpkg|
   package devpkg
 end
@@ -60,6 +62,7 @@ remote_file nginx_url do
   checksum node['nginx']['source']['checksum']
   path src_filepath
   backup false
+  action :create_if_missing
 end
 
 user node['nginx']['user'] do
@@ -169,7 +172,7 @@ bash "compile_nginx_source" do
   not_if do
     nginx_force_recompile == false &&
       node.automatic_attrs['nginx'] &&
-      node.automatic_attrs['nginx']['version'] == node['nginx']['version'] &&
+#      node.automatic_attrs['nginx']['version'] == node['nginx']['version'] &&
       node.automatic_attrs['nginx']['configure_arguments'].sort == configure_flags.sort
   end
 
