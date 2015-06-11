@@ -39,3 +39,12 @@ end
     mode 00755
   end
 end
+
+[ '/var/lib/nginx', '/var/lib/nginx/body' ].each do |dir|
+  directory dir do
+    action :create
+    owner node['nginx']['user']
+    group node['nginx']['group']
+    mode 00755
+  end
+end
