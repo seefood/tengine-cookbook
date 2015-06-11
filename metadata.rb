@@ -3,7 +3,7 @@ maintainer        "Ira Abramov"
 maintainer_email  "github@ira.abramov.org"
 license           "Apache 2.0"
 description       "Installs and configures Tengine, a heavily patched nginx"
-version           "1.4.1"
+version           "2.0.0"
 
 recipe "tengine", "Installs nginx package and sets up configuration with Debian apache style with sites-enabled/sites-available"
 recipe "tengine::source", "Installs tengine from source and sets up configuration with Debian apache style with sites-enabled/sites-available"

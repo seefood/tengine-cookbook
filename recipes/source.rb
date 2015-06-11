@@ -26,7 +26,7 @@ nginx_url = node['nginx']['source']['url'] ||
   "http://nginx.org/download/nginx-#{node['nginx']['version']}.tar.gz"
 
 unless(node['nginx']['source']['prefix'])
-  node.set['nginx']['source']['prefix'] = "/opt/nginx-#{node['nginx']['version']}"
+  node.set['nginx']['source']['prefix'] = node['nginx']['prefix']
 end
 unless(node['nginx']['source']['conf_path'])
   node.set['nginx']['source']['conf_path'] = "#{node['nginx']['dir']}/nginx.conf"
@@ -37,9 +37,8 @@ unless(node['nginx']['source']['default_configure_flags'])
     "--conf-path=#{node['nginx']['dir']}/nginx.conf"
   ]
 end
-node.set['nginx']['binary']          = "#{node['nginx']['source']['prefix']}/sbin/nginx"
-node.set['nginx']['daemon_disable']  = true
 
+node.set['nginx']['daemon_disable']  = true
 include_recipe "tengine::ohai_plugin"
 include_recipe "tengine::commons_dir"
 include_recipe "tengine::commons_script"
@@ -59,7 +58,6 @@ end
 
 remote_file nginx_url do
   source nginx_url
-  checksum node['nginx']['source']['checksum']
   path src_filepath
   backup false
   action :create_if_missing
@@ -74,6 +72,32 @@ end
 node.run_state['nginx_force_recompile'] = false
 node.run_state['nginx_configure_flags'] =
   node['nginx']['source']['default_configure_flags'] | node['nginx']['configure_flags']
+
+configure_flags = node.run_state['nginx_configure_flags']
+nginx_force_recompile = node.run_state['nginx_force_recompile']
+
+bash "compile_nginx_source" do
+  cwd ::File.dirname(src_filepath)
+  code <<-EOH
+    tar zxf #{::File.basename(src_filepath)} -C #{::File.dirname(src_filepath)} &&
+    cd tengine-#{node['nginx']['version']} &&
+    ./configure #{node.run_state['nginx_configure_flags'].join(" ")} &&
+    make && make install
+  EOH
+
+  not_if do
+    nginx_force_recompile == false &&
+        node.automatic_attrs['nginx'] &&
+        node.automatic_attrs['nginx']['configure_arguments'].sort == configure_flags.sort
+  end
+
+  notifies :restart, "service[nginx]"
+end
+
+node.run_state.delete('nginx_configure_flags')
+node.run_state.delete('nginx_force_recompile')
+
+
 
 case node['nginx']['init_style']
 when "runit"
@@ -93,7 +117,7 @@ when "bluepill"
     source "nginx.pill.erb"
     mode 00644
     variables(
-      :working_dir => node['nginx']['source']['prefix'],
+      :working_dir => node['nginx']['prefix'],
       :src_binary => node['nginx']['binary'],
       :nginx_dir => node['nginx']['dir'],
       :log_dir => node['nginx']['log_dir'],
@@ -157,27 +181,3 @@ node['nginx']['source']['modules'].each do |ngx_module|
   include_recipe "tengine::#{ngx_module}"
 end
 
-configure_flags = node.run_state['nginx_configure_flags']
-nginx_force_recompile = node.run_state['nginx_force_recompile']
-
-bash "compile_nginx_source" do
-  cwd ::File.dirname(src_filepath)
-  code <<-EOH
-    tar zxf #{::File.basename(src_filepath)} -C #{::File.dirname(src_filepath)} &&
-    cd tengine-#{node['nginx']['version']} &&
-    ./configure #{node.run_state['nginx_configure_flags'].join(" ")} &&
-    make && make install
-  EOH
-
-  not_if do
-    nginx_force_recompile == false &&
-      node.automatic_attrs['nginx'] &&
-#      node.automatic_attrs['nginx']['version'] == node['nginx']['version'] &&
-      node.automatic_attrs['nginx']['configure_arguments'].sort == configure_flags.sort
-  end
-
-  notifies :restart, "service[nginx]"
-end
-
-node.run_state.delete('nginx_configure_flags')
-node.run_state.delete('nginx_force_recompile')
