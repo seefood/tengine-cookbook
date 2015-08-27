@@ -148,6 +148,20 @@ else
     )
   end
 
+  template "/etc/logrotate.d/nginx" do
+    path "/etc/logrotate.d/nginx"
+    source 'nginx.logrotate.erb'
+    owner 'root'
+    group 'root'
+    mode 00755
+    variables(
+      log_dir: node['nginx']['log_dir'],
+      user: node['nginx']['user'],
+      group: node['nginx']['group'],
+      pid: node['nginx']['pid']
+    )
+  end
+
   defaults_path = case node['platform']
     when 'debian', 'ubuntu'
       '/etc/default/nginx'
@@ -180,4 +194,3 @@ end
 node['nginx']['source']['modules'].each do |ngx_module|
   include_recipe "tengine::#{ngx_module}"
 end
-
